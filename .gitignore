@@ -15,6 +15,9 @@
 
 .idea/
 
+/.gocache/
+/.gomodcache/
+
 *.socket
 
 *.db

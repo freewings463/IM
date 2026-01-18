@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/WuKongIM/WuKongIM/pkg/wkutil"
+	"github.com/WuKongIM/WuKongIM/services/wukongim/infrastructure/kit/wkutil"
 	"github.com/spf13/cobra"
 )
 

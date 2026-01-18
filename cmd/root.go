@@ -18,10 +18,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/WuKongIM/WuKongIM/internal/options"
-	"github.com/WuKongIM/WuKongIM/internal/server"
-	"github.com/WuKongIM/WuKongIM/pkg/wklog"
-	"github.com/WuKongIM/WuKongIM/pkg/wkutil"
+	"github.com/WuKongIM/WuKongIM/services/wukongim/infrastructure/configuration/options"
+	"github.com/WuKongIM/WuKongIM/services/wukongim/infrastructure/kit/wkutil"
+	"github.com/WuKongIM/WuKongIM/services/wukongim/infrastructure/monitoring/logging/wklog"
+	"github.com/WuKongIM/WuKongIM/services/wukongim/infrastructure/transport/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 

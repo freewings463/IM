@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/WuKongIM/WuKongIM/cmd"
-	"github.com/WuKongIM/WuKongIM/pkg/wklog"
+	"github.com/WuKongIM/WuKongIM/services/wukongim/infrastructure/monitoring/logging/wklog"
 	"github.com/WuKongIM/WuKongIM/version"
 	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
