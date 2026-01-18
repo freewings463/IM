@@ -58,7 +58,6 @@ type Server struct {
 	engine        *wknet.Engine // 长连接引擎
 	// userReactor    *userReactor    // 用户的reactor，用于处理用户的行为逻辑
 	trace       *trace.Trace // 监控
-	demoServer  *DemoServer  // demo server
 	datasource  IDatasource  // 数据源
 	apiServer   *api.Server  // api服务
 	ingress     *ingress.Ingress
@@ -149,8 +148,6 @@ func New(opts *options.Options) *Server {
 			trace.GlobalTrace.Metrics.System().ExtranetOutgoingAdd(int64(n))
 		}),
 	)
-
-	s.demoServer = NewDemoServer(s) // demo server
 
 	s.webhook = webhook.New()
 	service.Webhook = s.webhook
@@ -339,10 +336,6 @@ func (s *Server) Start() error {
 		return err
 	}
 
-	if s.opts.Demo.On {
-		s.demoServer.Start()
-	}
-
 	if s.opts.Conversation.On {
 		err = s.conversationManager.Start()
 		if err != nil {
@@ -418,10 +411,6 @@ func (s *Server) Stop() error {
 	}
 
 	s.clusterServer.Stop()
-
-	if s.opts.Demo.On {
-		s.demoServer.Stop()
-	}
 
 	err := s.engine.Stop()
 	if err != nil {
@@ -543,12 +532,6 @@ func (s *Server) printEnhancedBanner() {
 		fmt.Printf("   ├─ Manager: %s\n", s.opts.Manager.Addr)
 	}
 
-	if s.opts.Demo.On {
-		fmt.Printf("   └─ 🎮 Demo: http://%s\n", s.opts.Demo.Addr)
-	} else {
-		fmt.Printf("   └─ Demo: disabled\n")
-	}
-
 	fmt.Println()
 
 	// 功能状态
@@ -568,9 +551,6 @@ func (s *Server) printEnhancedBanner() {
 	fmt.Printf("   ├─ Health Check: http://%s/health\n", s.opts.HTTPAddr)
 	if s.opts.Mode != options.ReleaseMode {
 		fmt.Printf("   ├─ API Docs: http://%s/docs\n", s.opts.HTTPAddr)
-	}
-	if s.opts.Demo.On {
-		fmt.Printf("   ├─ Chat Demo: http://%s\n", s.opts.Demo.Addr)
 	}
 	fmt.Printf("   └─ System Info: http://%s/varz\n", s.opts.HTTPAddr)
 

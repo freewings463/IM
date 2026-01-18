@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"io/fs"
 	"net/http"
 	"strconv"
 	"strings"
@@ -14,7 +13,6 @@ import (
 	"github.com/WuKongIM/WuKongIM/pkg/trace"
 	"github.com/WuKongIM/WuKongIM/pkg/wkhttp"
 	"github.com/WuKongIM/WuKongIM/pkg/wklog"
-	"github.com/WuKongIM/WuKongIM/version"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -50,16 +48,6 @@ func (m *managerServer) start() {
 
 	m.r.GetGinRoute().Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedPaths([]string{"/metrics"})))
 
-	st, _ := fs.Sub(version.WebFs, "web/dist")
-	m.r.GetGinRoute().NoRoute(func(c *gin.Context) {
-		if strings.HasPrefix(c.Request.URL.Path, "/web") {
-			c.FileFromFS("./", http.FS(st))
-			return
-		}
-	})
-
-	m.r.GetGinRoute().StaticFS("/web", http.FS(st))
-
 	m.setRoutes()
 
 	go func() {
@@ -71,7 +59,7 @@ func (m *managerServer) start() {
 	m.Info("ManagerServer started", zap.String("addr", m.addr))
 
 	_, port := parseAddr(m.addr)
-	m.Info(fmt.Sprintf("Manager web address： http://localhost:%d/web", port))
+	m.Info(fmt.Sprintf("Manager address： http://localhost:%d", port))
 }
 
 func (m *managerServer) stop() {
@@ -132,10 +120,6 @@ func (m *managerServer) jwtAndTokenAuthMiddleware() wkhttp.HandlerFunc {
 
 		fpath := c.Request.URL.Path
 		if strings.HasPrefix(fpath, "/manager/login") { // 登录不需要认证
-			c.Next()
-			return
-		}
-		if strings.HasPrefix(fpath, "/web") {
 			c.Next()
 			return
 		}
